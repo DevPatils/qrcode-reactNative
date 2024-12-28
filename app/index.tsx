@@ -1,10 +1,11 @@
 import React, { useState } from 'react';
-import { Button, Image, View, Platform, Alert } from 'react-native';
+import { Button, Image, View, Platform, Alert, Text, ScrollView } from 'react-native';
 import * as ImagePicker from 'expo-image-picker';
-import * as FileSystem from 'expo-file-system';
+import axios from 'axios'; // Import Axios
 
 export default function Index() {
   const [image, setImage] = useState(null);
+  const [predictionResult, setPredictionResult] = useState(null); // Store prediction results
 
   const pickImage = async () => {
     if (Platform.OS !== 'web') {
@@ -16,7 +17,7 @@ export default function Index() {
     }
 
     let result = await ImagePicker.launchImageLibraryAsync({
-      mediaTypes: ImagePicker.MediaType.Images,  // Fixed deprecation warning
+      mediaTypes: ImagePicker.MediaType.Images,
       allowsEditing: true,
       aspect: [4, 3],
       quality: 1,
@@ -53,7 +54,6 @@ export default function Index() {
       return;
     }
 
-    // Create FormData for uploading
     const formData = new FormData();
     formData.append('image', {
       uri: image,
@@ -62,36 +62,53 @@ export default function Index() {
     });
 
     try {
-      const response = await fetch('https://bc21-49-43-33-162.ngrok-free.app/predictimage', {
-        method: 'POST',
-        body: formData,
+      // Make the request using Axios
+      const response = await axios.post('https://4169-49-43-32-139.ngrok-free.app/predictimage', formData, {
+        headers: {
+          'Content-Type': 'multipart/form-data', // Important for uploading images
+        },
       });
-
-      // Check if response is valid and a JSON object
-      const textResponse = await response.text();
-      try {
-        const jsonResponse = JSON.parse(textResponse);
-        if (response.ok) {
-          Alert.alert('Prediction Result', JSON.stringify(jsonResponse));
-        } else {
-          Alert.alert('Error', 'Failed to get prediction');
-        }
-      } catch (error) {
-        console.error('Error parsing response:', error);
-        Alert.alert('Error', 'Failed to parse the response.');
-      }
+      console.log(response.data)
+      setPredictionResult(response.data);
+      // Handle the response data
+      // const jsonResponse = response.data;
+      // if (jsonResponse) {
+      //   setPredictionResult(jsonResponse); // Set the prediction result in state
+      // } else {
+      //   Alert.alert('Error', 'Failed to get prediction');
+      // }
     } catch (error) {
       console.error('Error uploading image:', error);
       alert('Error uploading image.');
     }
   };
 
+  const renderBoldText = (text) => (
+    <Text style={{ fontWeight: 'bold' }}>{text}</Text>
+  );
+
   return (
-    <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+    <ScrollView style={{ flex: 1, padding: 20 }} contentContainerStyle={{ justifyContent: 'center', alignItems: 'center' }}>
       <Button title="Pick an image" onPress={pickImage} />
       <Button title="Capture a picture" onPress={captureImage} />
-      {image && <Image source={{ uri: image }} style={{ width: 200, height: 200 }} />}
+      {image && <Image source={{ uri: image }} style={{ width: 200, height: 200, marginVertical: 20 }} />}
       <Button title="Upload Image" onPress={uploadImage} />
-    </View>
+
+      {/* Display Prediction Result */}
+      {predictionResult ? (
+        <View style={{ marginTop: 20, alignItems: 'flex-start' }}>
+          <Text style={{color:"white"}}>
+            {predictionResult.carbonEmissionsEstimate}
+
+          </Text>
+          <Text>
+            {predictionResult.supplyChainProcess}
+            </Text>
+          <Text>
+            {predictionResult.recommendations}
+            </Text>
+        </View>
+      ) : null}
+    </ScrollView>
   );
 }
