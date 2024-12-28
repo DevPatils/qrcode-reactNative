@@ -4,8 +4,8 @@ import * as ImagePicker from 'expo-image-picker';
 import axios from 'axios'; // Import Axios
 
 export default function Index() {
-  const [image, setImage] = useState(null);
-  const [predictionResult, setPredictionResult] = useState(null); // Store prediction results
+  const [image, setImage] = useState<string | null>(null);
+  const [predictionResult, setPredictionResult] = useState<any>(null); // Store prediction results
 
   const pickImage = async () => {
     if (Platform.OS !== 'web') {
@@ -17,7 +17,7 @@ export default function Index() {
     }
 
     let result = await ImagePicker.launchImageLibraryAsync({
-      mediaTypes: ImagePicker.MediaType.Images,
+      mediaTypes: ImagePicker.MediaTypeOptions.Images,
       allowsEditing: true,
       aspect: [4, 3],
       quality: 1,
@@ -59,11 +59,11 @@ export default function Index() {
       uri: image,
       type: 'image/jpg',
       name: 'image.jpg',
-    });
+    } as any);
 
     try {
       // Make the request using Axios
-      const response = await axios.post('https://4169-49-43-32-139.ngrok-free.app/predictimage', formData, {
+      const response = await axios.post('https://238c-2405-201-201d-b0f9-3dec-fb71-3b06-a236.ngrok-free.app/predictimage', formData, {
         headers: {
           'Content-Type': 'multipart/form-data', // Important for uploading images
         },
@@ -83,7 +83,7 @@ export default function Index() {
     }
   };
 
-  const renderBoldText = (text) => (
+  const renderBoldText = (text: string) => (
     <Text style={{ fontWeight: 'bold' }}>{text}</Text>
   );
 
