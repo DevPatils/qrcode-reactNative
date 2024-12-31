@@ -8,6 +8,7 @@ import { useColorScheme } from '@/hooks/useColorScheme';
 import { createStackNavigator } from '@react-navigation/stack';
 import Index from './index';
 import "../global.css";
+import { Stack } from 'expo-router';
 
 
 SplashScreen.preventAutoHideAsync();
@@ -18,7 +19,6 @@ export default function RootLayout() {
     SpaceMono: require('../assets/fonts/SpaceMono-Regular.ttf'),
   });
 
-  const Stack = createStackNavigator(); 
 
   useEffect(() => {
     if (loaded) {
@@ -33,9 +33,11 @@ export default function RootLayout() {
   return (
     <SafeAreaView style={{ flex: 1 }}>
       <StatusBar style="auto" />  
-      <Stack.Navigator screenOptions={{ headerShown: false }}>
-        <Stack.Screen name="Index" component={Index} />
-      </Stack.Navigator>
+      <Stack>
+      <Stack.Screen name='index' options={{headerShown:false}}/>
+      <Stack.Screen name='(auth)' options={{headerShown:false}}/>
+      {/* <Stack.Screen name='(tabs)' options={{headerShown:false}}/> */}
+    </Stack>
     </SafeAreaView>
   );
 }

@@ -7,7 +7,8 @@ import "../global.css";
 const LandingPage = () => {
   const handleScanClick = () => {
     // router.push('/scan-qr');
-    router.push('/sign-up');
+
+    router.push('/(auth)/sign-up');
   };
 
   const handleLearnMoreClick = () => {
