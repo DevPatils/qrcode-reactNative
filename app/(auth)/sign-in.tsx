@@ -5,38 +5,44 @@ import CustomButton from '@/components/CustomButton';
 import axios from 'axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
-
 const Signin = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
 
-  const handleSignin = async() => {
+  const handleSignin = async () => {
     if (!email || !password) {
       Alert.alert('Error', 'Both fields are required!');
       return;
     }
-    const response=await axios.post('https://9992-49-43-33-39.ngrok-free.app/user/login',{email,password})
-    console.log(response.data)
-    if(response.data.token!==null){
-      // sessionStorage.setItem('token', response.data.token);
-      AsyncStorage.setItem('token', response.data.token);
-      Alert.alert('Success', 'Sign In successful!');
-      
+
+    try {
+      const response = await axios.post('https://da96-49-43-33-162.ngrok-free.app/user/login', { email, password });
+      console.log(response.data);
+
+      if (response.data.token) {
+        await AsyncStorage.setItem('token', response.data.token);
+        Alert.alert('Success', 'Sign In successful!');
+      } else {
+        Alert.alert('Error', 'Invalid credentials!');
+      }
+    } catch (error) {
+      console.error(error);
+      Alert.alert('Error', 'An error occurred during sign-in.');
     }
-    // Alert.alert('Success', 'Sign In successful!');
-    console.log({ email, password });
   };
 
   return (
-    <View className="flex-1 bg-green-300 justify-center items-center px-5">
+    <View className="flex flex-1 bg-yellow-200 justify-center items-center p-5">
       {/* Header */}
-      <Text className="text-4xl font-bold text-black mb-6 font-pbold">Sign In</Text>
+      <Text className="text-5xl font-bold text-green-800 uppercase tracking-wide mb-5 bg-white border-4 border-black p-2 shadow-brutal">
+        Sign In
+      </Text>
 
       {/* Email Input */}
       <TextInput
-        className="w-80 border-black border-2 p-3 focus:outline-none focus:shadow-[2px_2px_0px_rgba(0,0,0,1)] focus:bg-[#FFA6F6] active:shadow-[2px_2px_0px_rgba(0,0,0,1)] mb-4"
+        className="w-80 border-black border-4 p-4 bg-yellow-100 focus:outline-none focus:shadow-[4px_4px_0px_rgba(0,0,0,1)] focus:bg-white mb-5"
         placeholder="Email"
-        placeholderTextColor="#888"
+        placeholderTextColor="#666"
         keyboardType="email-address"
         value={email}
         onChangeText={setEmail}
@@ -44,9 +50,9 @@ const Signin = () => {
 
       {/* Password Input */}
       <TextInput
-        className="w-80 border-black border-2 p-3 focus:outline-none focus:shadow-[2px_2px_0px_rgba(0,0,0,1)] focus:bg-[#FFA6F6] active:shadow-[2px_2px_0px_rgba(0,0,0,1)] mb-6"
+        className="w-80 border-black border-4 p-4 bg-yellow-100 focus:outline-none focus:shadow-[4px_4px_0px_rgba(0,0,0,1)] focus:bg-white mb-7"
         placeholder="Password"
-        placeholderTextColor="#888"
+        placeholderTextColor="#666"
         secureTextEntry
         value={password}
         onChangeText={setPassword}
@@ -56,19 +62,19 @@ const Signin = () => {
       <CustomButton
         title="Sign In"
         handlepress={handleSignin}
-        containerStyles="w-80 bg-green-500 py-4 rounded-md border-2 border-black shadow-md"
-        textStyles="text-white font-bold text-lg uppercase"
+        containerStyles="bg-green-600 w-80 py-4 border-4 border-black rounded-md shadow-brutal"
+        textStyles="text-white font-bold text-lg"
         isLoading={false}
       />
 
       {/* Redirect to Sign Up */}
-      <View className="mt-6">
-        <Text className="text-base text-black mb-2">Don't have an account?</Text>
+      <View className="mt-8 flex items-center">
+        <Text className="text-lg text-green-900 mb-4">Don't have an account?</Text>
         <CustomButton
-          title="Sign up"
+          title="Sign Up"
           handlepress={() => router.push('/sign-up')}
-          containerStyles="bg-green-500 px-10 py-3 rounded-md border-2 border-black shadow-md"
-          textStyles="text-white font-pbold text-lg"
+          containerStyles="bg-blue-500 w-80 py-3 border-4 border-black rounded-md shadow-brutal"
+          textStyles="text-white font-bold text-lg"
           isLoading={false}
         />
       </View>

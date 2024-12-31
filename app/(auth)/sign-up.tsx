@@ -1,54 +1,66 @@
 import React, { useState } from 'react';
-import { View, Text, TextInput, TouchableOpacity, Alert } from 'react-native';
-import axios from 'axios';
-import { NavigationProp } from '@react-navigation/native';
+import { View, Text, TextInput, Alert } from 'react-native';
 import { router } from 'expo-router';
 import CustomButton from '@/components/CustomButton';
+import axios from 'axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
-
-const Signup = ({ navigation }: { navigation: NavigationProp<any> }) => {
+const Signup = () => {
   const [username, setUsername] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
 
-  const handleSignup = async() => {
+  const handleSignup = async () => {
     if (!username || !email || !password) {
       Alert.alert('Error', 'All fields are required!');
       return;
     }
-    const response=await axios.post('https://0759-49-43-33-162.ngrok-free.app/user/signup',{name:username,email,password})
-    console.log(response.data)
-    if(response.data.message==="User created"){
-      Alert.alert('Success', 'User created successfully!');
-      setUsername('');
-      setEmail('');
-      setPassword('');
-      AsyncStorage.setItem('token', response.data.token);
-    //   router.replace('/createnotes')
+
+    try {
+      const response = await axios.post('https://fb64-49-43-33-162.ngrok-free.app/user/signUp', {
+        name: username,
+        email,
+        password,
+      });
+      console.log(response.data);
+
+      if (response.data.message === 'User created') {
+        Alert.alert('Success', 'User created successfully!');
+        setUsername('');
+        setEmail('');
+        setPassword('');
+        await AsyncStorage.setItem('token', response.data.token);
+       router.replace('/scan');
+      } else {
+        Alert.alert('Error', 'Failed to create user!');
+      }
+    } catch (error) {
+      console.error(error);
+      Alert.alert('Error', 'An error occurred during sign-up.');
     }
-    console.log({ username, email, password });
   };
 
   return (
-    <View className="flex-1 bg-green-300 justify-center items-center px-5">
+    <View className="flex flex-1 bg-yellow-200 justify-center items-center p-5">
       {/* Header */}
-      <Text className="text-4xl font-bold text-black mb-6 font-pbold">Sign Up</Text>
+      <Text className="text-5xl font-bold text-green-800 uppercase tracking-wide mb-5 bg-white border-4 border-black p-2 shadow-brutal">
+        Sign Up
+      </Text>
 
       {/* Username Input */}
       <TextInput
-        className="w-80 border-black border-2 p-3 focus:outline-none focus:shadow-[2px_2px_0px_rgba(0,0,0,1)] focus:bg-[#FFA6F6] active:shadow-[2px_2px_0px_rgba(0,0,0,1)] mb-4"
+        className="w-80 border-black border-4 p-4 bg-yellow-100 focus:outline-none focus:shadow-[4px_4px_0px_rgba(0,0,0,1)] focus:bg-white mb-5"
         placeholder="Username"
-        placeholderTextColor="#888"
+        placeholderTextColor="#666"
         value={username}
         onChangeText={setUsername}
       />
 
       {/* Email Input */}
       <TextInput
-        className="w-80 border-black border-2 p-3 focus:outline-none focus:shadow-[2px_2px_0px_rgba(0,0,0,1)] focus:bg-[#FFA6F6] active:shadow-[2px_2px_0px_rgba(0,0,0,1)] mb-4"
+        className="w-80 border-black border-4 p-4 bg-yellow-100 focus:outline-none focus:shadow-[4px_4px_0px_rgba(0,0,0,1)] focus:bg-white mb-5"
         placeholder="Email"
-        placeholderTextColor="#888"
+        placeholderTextColor="#666"
         keyboardType="email-address"
         value={email}
         onChangeText={setEmail}
@@ -56,30 +68,31 @@ const Signup = ({ navigation }: { navigation: NavigationProp<any> }) => {
 
       {/* Password Input */}
       <TextInput
-        className="w-80 border-black border-2 p-3 focus:outline-none focus:shadow-[2px_2px_0px_rgba(0,0,0,1)] focus:bg-[#FFA6F6] active:shadow-[2px_2px_0px_rgba(0,0,0,1)] mb-6"
+        className="w-80 border-black border-4 p-4 bg-yellow-100 focus:outline-none focus:shadow-[4px_4px_0px_rgba(0,0,0,1)] focus:bg-white mb-7"
         placeholder="Password"
-        placeholderTextColor="#888"
+        placeholderTextColor="#666"
         secureTextEntry
         value={password}
         onChangeText={setPassword}
       />
 
       {/* Signup Button */}
-      <TouchableOpacity
-        className="w-80 bg-green-500 py-4 rounded-md items-center border-2 border-black shadow-[2px_2px_0px_rgba(0,0,0,1)]"
-        onPress={handleSignup}
-      >
-        <Text className="text-white font-bold text-lg uppercase">Sign Up</Text>
-      </TouchableOpacity>
+      <CustomButton
+        title="Sign Up"
+        handlepress={handleSignup}
+        containerStyles="bg-green-600 w-80 py-4 border-4 border-black rounded-md shadow-brutal"
+        textStyles="text-white font-bold text-lg"
+        isLoading={false}
+      />
 
       {/* Redirect to Sign In */}
-      <View className="mt-6">
-        <Text className="text-base text-black mb-2">Already have an account?</Text>
+      <View className="mt-8 flex items-center">
+        <Text className="text-lg text-green-900 mb-4">Already have an account?</Text>
         <CustomButton
           title="Sign In"
           handlepress={() => router.push('/sign-in')}
-          containerStyles="bg-green-500 px-10 py-3 rounded-md border-2 border-black shadow-md"
-          textStyles="text-white font-pbold text-lg"
+          containerStyles="bg-blue-500 w-80 py-3 border-4 border-black rounded-md shadow-brutal"
+          textStyles="text-white font-bold text-lg"
           isLoading={false}
         />
       </View>
