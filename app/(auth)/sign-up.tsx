@@ -17,7 +17,7 @@ const Signup = () => {
     }
 
     try {
-      const response = await axios.post('https://fb64-49-43-33-162.ngrok-free.app/user/signUp', {
+      const response = await axios.post('https://6493-2405-201-2011-94-9cd5-18bf-5edd-ca76.ngrok-free.app/user/signUp', {
         name: username,
         email,
         password,

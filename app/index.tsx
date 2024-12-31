@@ -2,11 +2,19 @@ import React from 'react';
 import { View, Text, Image } from 'react-native';
 import CustomButton from '@/components/CustomButton';
 import { router } from 'expo-router';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const LandingPage = () => {
-  const handleScanClick = () => {
+  const handleScanClick = async () => {
+    const token = await AsyncStorage.getItem('token')
+    if (token == null) {
+
+      console.log(token)
+      router.push('/sign-up');
+    }
     router.push('/(auth)/sign-up');
-  };
+  }
+
 
   const handleLearnMoreClick = () => {
     // router.push('/about');

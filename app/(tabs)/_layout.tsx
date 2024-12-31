@@ -58,7 +58,7 @@ const TabLayout = () => {
                         tabBarIcon:({color})=><AntDesign name='user' size={12} color={color}/>
                     }}
                 />
-                    <Tabs.Screen name='tutorial'
+                    <Tabs.Screen name='tutorials'
                     options={{
                         title: "Tutorial",
                         headerShown:false,
