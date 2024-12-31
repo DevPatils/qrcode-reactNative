@@ -7,6 +7,7 @@ import 'react-native-reanimated';
 import { useColorScheme } from '@/hooks/useColorScheme';
 import { createStackNavigator } from '@react-navigation/stack';
 import Index from './index';
+import "../global.css";
 
 
 SplashScreen.preventAutoHideAsync();

@@ -4,6 +4,7 @@ import React, { useEffect } from 'react';
 import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
 // import SessionStorage from 'react-native-session-storage';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import "../global.css"
 
 
 const IndexPage = () => {
