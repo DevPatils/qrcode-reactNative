@@ -1,3 +1,5 @@
+//home
+
 import React from 'react';
 import { View, Text, TouchableOpacity, StyleSheet, Linking } from 'react-native';
 

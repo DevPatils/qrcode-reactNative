@@ -7,7 +7,7 @@ import 'react-native-reanimated';
 import { useColorScheme } from '@/hooks/useColorScheme';
 import { createStackNavigator } from '@react-navigation/stack';
 import Index from './index';
-import Home from './Home/home';
+
 
 SplashScreen.preventAutoHideAsync();
 
@@ -33,7 +33,6 @@ export default function RootLayout() {
     <SafeAreaView style={{ flex: 1 }}>
       <StatusBar style="auto" />  
       <Stack.Navigator screenOptions={{ headerShown: false }}>
-        <Stack.Screen name="Home" component={Home} />
         <Stack.Screen name="Index" component={Index} />
       </Stack.Navigator>
     </SafeAreaView>
