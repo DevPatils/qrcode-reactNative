@@ -10,9 +10,9 @@ import {
 } from 'react-native';
 import * as ImagePicker from 'expo-image-picker';
 import Icon from 'react-native-vector-icons/MaterialIcons';
-import { BASE_URL } from '@/constants/url';
 import axios from 'axios';
 import mime from 'mime';
+import { BASE_URL } from '@/constants/url'; // Make sure this is set correctly
 
 export default function ScanImagePage() {
   const [image, setImage] = useState<string | null>(null);
@@ -56,7 +56,6 @@ export default function ScanImagePage() {
     const newImageUri = image.startsWith('file://') ? image : `file://${image}`;
 
     const formData = new FormData();
-    // @ts-expect-error: FormData accepts Blob or Buffer
     formData.append('image', {
       uri: newImageUri,
       type: mime.getType(newImageUri) || 'image/jpeg', // Default to image/jpeg if undefined
@@ -71,12 +70,21 @@ export default function ScanImagePage() {
         },
       });
 
-      if (response.data) {
-        setResult(response.data);
-        console.log(response.data["Product Details"]);
-      } else {
-        Alert.alert('Error', 'Failed to get prediction');
+      // Parse the backend response (which is a cleaned-up string)
+      const cleanedResponse = response.data;
+      let parsedResult = {};
+
+      // Try to parse as JSON (if it follows JSON structure)
+      try {
+        parsedResult = JSON.parse(cleanedResponse);
+      } catch (error) {
+        console.error('Failed to parse response:', error);
+        alert('Failed to parse the prediction result.');
       }
+
+      setResult(parsedResult);  // Set the parsed result
+
+      console.log(parsedResult);
     } catch (error) {
       console.error('Error uploading image:', error);
       alert('Error uploading image.');
@@ -84,8 +92,6 @@ export default function ScanImagePage() {
       setLoading(false);
     }
   };
-
-
 
   const discardImage = () => {
     setImage(null);
@@ -97,13 +103,69 @@ export default function ScanImagePage() {
       <View key={key} className="mb-4">
         <Text className="text-lg font-bold text-gray-700">{key}:</Text>
         {typeof data[key] === 'object' ? (
-          renderPointwiseDetails(data[key])
+          renderPointwiseDetails(data[key]) // Recursively handle nested objects
         ) : (
-          <Text className="text-gray-600 ml-4">• {data[key]}</Text>
+          <Text className="text-gray-600 ml-4">• {String(data[key]) || 'N/A'}</Text> // Convert to string safely
         )}
       </View>
     ));
   };
+  
+  
+  const renderCost = (cost: any) => {
+    if (cost && typeof cost === 'object') {
+      return (
+        <View>
+          <Text>- Estimated Price: {cost.estimate ? cost.estimate : 'N/A'}</Text>
+          <Text>- Note: {cost.note ? cost.note : 'N/A'}</Text>
+        </View>
+      );
+    }
+    return <Text>- Cost: {cost || 'N/A'}</Text>;
+  };
+  
+  
+  const renderSupplyChainDetails = (data: any) => {
+    return (
+      <View className="bg-white p-4 rounded-lg shadow mb-4">
+        <Text className="text-lg font-bold mb-2">Supply Chain Details</Text>
+  
+        {/* Raw Materials */}
+        <Text className="text-md font-semibold mb-1">Raw Materials:</Text>
+        {data["Raw Materials"] ? (
+          renderPointwiseDetails(data["Raw Materials"])
+        ) : (
+          <Text className="text-gray-600 ml-4">• N/A</Text>
+        )}
+  
+        {/* Manufacturing */}
+        <Text className="text-md font-semibold mt-2 mb-1">Manufacturing:</Text>
+        <Text>
+          - Processes:{" "}
+          {Array.isArray(data.Manufacturing?.Processes)
+            ? data.Manufacturing?.Processes.join(", ")
+            : data.Manufacturing?.Processes || "N/A"}
+        </Text>
+        <Text>
+          - Hubs:{" "}
+          {Array.isArray(data.Manufacturing?.Hubs)
+            ? data.Manufacturing?.Hubs.join(", ")
+            : data.Manufacturing?.Hubs || "N/A"}
+        </Text>
+  
+        {/* Distribution */}
+        <Text className="text-md font-semibold mt-2 mb-1">Distribution:</Text>
+        <Text>
+          - Channels:{" "}
+          {Array.isArray(data.Distribution?.channels)
+            ? data.Distribution?.channels.join(", ")
+            : data.Distribution?.channels || "N/A"}
+        </Text>
+      </View>
+    );
+  };
+  
+  
 
   return (
     <View className="flex-1 bg-green-200">
@@ -117,8 +179,7 @@ export default function ScanImagePage() {
           <Icon name="check" size={24} color="black" />
         </TouchableOpacity>
       </View>
-
-      {/* Camera Preview or Image */}
+  
       <View className="flex-1 justify-center items-center">
         {image ? (
           <Image source={{ uri: image }} className="w-64 h-64 rounded-lg" />
@@ -130,53 +191,34 @@ export default function ScanImagePage() {
             <Text className="text-gray-700 mt-2">Tap to Scan</Text>
           </TouchableOpacity>
         )}
-
+  
         {loading && <ActivityIndicator size="large" color="#000" className="mt-4" />}
       </View>
-
-      {/* Result Card */}
+  
       {result && (
         <ScrollView className="bg-white p-4 rounded-t-2xl shadow-lg">
           <Text className="text-center text-xl font-bold mb-4">Prediction Details</Text>
-
+  
           {/* Product Details */}
           <View className="bg-white p-4 rounded-lg shadow mb-4">
-            <Text className="text-lg font-bold mb-2">Product Details</Text>
-            <Text>- Name: {result["Product Details"]?.Name || 'N/A'}</Text>
-            <Text>- Size: {result["Product Details"]?.Size || 'N/A'}</Text>
-            <Text>- Type: {result["Product Details"]?.Type || 'N/A'}</Text>
-            <Text>- Material: {result["Product Details"]?.Material || 'N/A'}</Text>
-            <Text>- Cost (INR): {result["Product Details"]?.Cost || 'N/A'}</Text>
+  <Text className="text-lg font-bold mb-2">Product Details</Text>
+  <Text>- Name: {result["Product Details"]?.Name || 'N/A'}</Text>
+  <Text>- Size: {result["Product Details"]?.Size || 'N/A'}</Text>
+  <Text>- Type: {result["Product Details"]?.Type || 'N/A'}</Text>
+  <Text>- Material: {result["Product Details"]?.Material || 'N/A'}</Text>
           </View>
-
+  
           {/* Supply Chain Details */}
-          <View className="bg-white p-4 rounded-lg shadow mb-4">
-            <Text className="text-lg font-bold mb-2">Supply Chain Details</Text>
-
-            {/* Raw Materials */}
-            <Text className="text-md font-semibold mb-1">Raw Materials:</Text>
-            {result["Supply Chain Details"]?.["Raw Materials"] ? (
-              renderPointwiseDetails(result["Supply Chain Details"]["Raw Materials"])
-            ) : (
-              <Text className="text-gray-600 ml-4">• N/A</Text>
-            )}
-
-            {/* Manufacturing */}
-            <Text className="text-md font-semibold mt-2 mb-1">Manufacturing:</Text>
-            <Text>
-              - Processes:{' '}
-              {result["Supply Chain Details"]?.Manufacturing?.Processes || 'N/A'}
-            </Text>
-            <Text>- Hubs: {result["Supply Chain Details"]?.Manufacturing?.Hubs || 'N/A'}</Text>
-
-            {/* Distribution */}
-            <Text className="text-md font-semibold mt-2 mb-1">Distribution:</Text>
-            <Text>
-              - Channels: {result["Supply Chain Details"]?.Distribution?.Channels || 'N/A'}
-            </Text>
-          </View>
+          {renderSupplyChainDetails(result["Supply Chain Details"])}
         </ScrollView>
       )}
+
+<Text>
+    - Cost:{" "}
+    {result["Product Details"]?.Cost?.INR
+      ? JSON.stringify(result["Product Details"]?.Cost?.INR) 
+      : "N/A"}
+  </Text>
     </View>
   );
 }
