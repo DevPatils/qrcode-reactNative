@@ -11,13 +11,18 @@ import * as ImagePicker from 'expo-image-picker';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import { BASE_URL } from '@/constants/url';
 import axios from 'axios';
-
+import mime from 'mime';
 export default function ScanImagePage() {
-  const [image, setImage] = useState(null);
+  const [image, setImage] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
-  const [result, setResult] = useState(null);
+  interface PredictionResult {
+    points: number;
+    materialType: string;
+  }
 
-  const requestPermission = async (type) => {
+  const [result, setResult] = useState<PredictionResult | null>(null);
+
+  const requestPermission = async (type:any) => {
     const { status } =
       type === 'camera'
         ? await ImagePicker.requestCameraPermissionsAsync()
@@ -43,29 +48,41 @@ export default function ScanImagePage() {
 
   const uploadImage = async () => {
     if (!image) {
-      Alert.alert('Error', 'Please capture an image first!');
+      alert('Please select or capture an image first!');
       return;
     }
+    const newImageUri = image.startsWith('file://') ? image : `file://${image}`;
 
     const formData = new FormData();
-    const response = await fetch(image);
-    const blob = await response.blob();
-    formData.append('image', blob, `image.${image.split('.').pop()}`);
-
-    setLoading(true);
+    // @ts-expect-error: FormData accepts Blob or Buffer
+    formData.append('image', {
+      uri: newImageUri,
+      type: mime.getType(newImageUri) || 'image/jpeg', // Default to image/jpeg if undefined
+      name: newImageUri.split('/').pop(),
+    });
+    
+    console.log('formData:', JSON.stringify(formData));
     try {
-      const { data } = await axios.post(`${BASE_URL}/predictimage`, formData, {
-        headers: { 'Content-Type': 'multipart/form-data' },
+      console.log('Uploading image...');
+      const response = await axios.post(`${BASE_URL}/predictimage`, formData, {
+        headers: {
+          'Content-Type': 'multipart/form-data',
+          Accept: 'application/json', // Add Accept header
+
+        },
       });
-      setResult(data);
+      
+      if (response.data) {
+        console.log('Prediction:', response.data);
+        setResult(response.data);
+      } else {
+        Alert.alert('Error', 'Failed to get prediction');
+      }
     } catch (error) {
-      console.error('Upload Error:', error);
-      Alert.alert('Error', 'Failed to upload image. Try again later.');
-    } finally {
-      setLoading(false);
+      console.error('Error uploading image:', error);
+      alert('Error uploading image.');
     }
   };
-
   const discardImage = () => {
     setImage(null);
     setResult(null);

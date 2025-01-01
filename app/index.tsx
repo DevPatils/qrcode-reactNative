@@ -10,9 +10,10 @@ const LandingPage = () => {
     if (token == null) {
 
       console.log(token)
-      router.push('/scan');
+      
+      router.push('/(auth)/sign-up');
     }
-    router.push('/(auth)/sign-up');
+    router.push('/(tabs)/scan');
   }
 
 
