@@ -6,23 +6,20 @@ import {
   Image,
   ActivityIndicator,
   Alert,
+  ScrollView,
 } from 'react-native';
 import * as ImagePicker from 'expo-image-picker';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import { BASE_URL } from '@/constants/url';
 import axios from 'axios';
 import mime from 'mime';
+
 export default function ScanImagePage() {
   const [image, setImage] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
-  interface PredictionResult {
-    points: number;
-    materialType: string;
-  }
+  const [result, setResult] = useState<any | null>(null);
 
-  const [result, setResult] = useState<PredictionResult | null>(null);
-
-  const requestPermission = async (type:any) => {
+  const requestPermission = async (type: any) => {
     const { status } =
       type === 'camera'
         ? await ImagePicker.requestCameraPermissionsAsync()
@@ -39,7 +36,10 @@ export default function ScanImagePage() {
     const hasPermission = await requestPermission('camera');
     if (!hasPermission) return;
 
-    const result = await ImagePicker.launchCameraAsync({ allowsEditing: true, quality: 1 });
+    const result = await ImagePicker.launchCameraAsync({
+      allowsEditing: true,
+      quality: 1,
+    });
 
     if (!result.canceled && result.assets?.length > 0) {
       setImage(result.assets[0].uri);
@@ -51,6 +51,8 @@ export default function ScanImagePage() {
       alert('Please select or capture an image first!');
       return;
     }
+
+    setLoading(true);
     const newImageUri = image.startsWith('file://') ? image : `file://${image}`;
 
     const formData = new FormData();
@@ -60,20 +62,16 @@ export default function ScanImagePage() {
       type: mime.getType(newImageUri) || 'image/jpeg', // Default to image/jpeg if undefined
       name: newImageUri.split('/').pop(),
     });
-    
-    console.log('formData:', JSON.stringify(formData));
+
     try {
-      console.log('Uploading image...');
       const response = await axios.post(`${BASE_URL}/predictimage`, formData, {
         headers: {
           'Content-Type': 'multipart/form-data',
-          Accept: 'application/json', // Add Accept header
-
+          Accept: 'application/json',
         },
       });
-      
+
       if (response.data) {
-        console.log('Prediction:', response.data);
         setResult(response.data);
       } else {
         Alert.alert('Error', 'Failed to get prediction');
@@ -81,11 +79,27 @@ export default function ScanImagePage() {
     } catch (error) {
       console.error('Error uploading image:', error);
       alert('Error uploading image.');
+    } finally {
+      setLoading(false);
     }
   };
+
   const discardImage = () => {
     setImage(null);
     setResult(null);
+  };
+
+  const renderPointwiseDetails = (data: any) => {
+    return Object.keys(data).map((key) => (
+      <View key={key} className="mb-4">
+        <Text className="text-lg font-bold text-gray-700">{key}:</Text>
+        {typeof data[key] === 'object' ? (
+          renderPointwiseDetails(data[key])
+        ) : (
+          <Text className="text-gray-600 ml-4">• {data[key]}</Text>
+        )}
+      </View>
+    ));
   };
 
   return (
@@ -119,10 +133,10 @@ export default function ScanImagePage() {
 
       {/* Result Card */}
       {result && (
-        <View className="bg-white p-4 rounded-t-2xl shadow-lg">
-          <Text className="text-center text-xl font-bold">{result.points} Points</Text>
-          <Text className="text-center text-gray-500 mt-1">{result.materialType}</Text>
-        </View>
+        <ScrollView className="bg-white p-4 rounded-t-2xl shadow-lg">
+          <Text className="text-center text-xl font-bold mb-4">Prediction Details</Text>
+          {renderPointwiseDetails(result)}
+        </ScrollView>
       )}
     </View>
   );
