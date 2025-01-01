@@ -73,6 +73,7 @@ export default function ScanImagePage() {
 
       if (response.data) {
         setResult(response.data);
+        console.log(response.data["Product Details"]);
       } else {
         Alert.alert('Error', 'Failed to get prediction');
       }
@@ -83,6 +84,8 @@ export default function ScanImagePage() {
       setLoading(false);
     }
   };
+
+
 
   const discardImage = () => {
     setImage(null);
@@ -135,7 +138,43 @@ export default function ScanImagePage() {
       {result && (
         <ScrollView className="bg-white p-4 rounded-t-2xl shadow-lg">
           <Text className="text-center text-xl font-bold mb-4">Prediction Details</Text>
-          {renderPointwiseDetails(result)}
+
+          {/* Product Details */}
+          <View className="bg-white p-4 rounded-lg shadow mb-4">
+            <Text className="text-lg font-bold mb-2">Product Details</Text>
+            <Text>- Name: {result["Product Details"]?.Name || 'N/A'}</Text>
+            <Text>- Size: {result["Product Details"]?.Size || 'N/A'}</Text>
+            <Text>- Type: {result["Product Details"]?.Type || 'N/A'}</Text>
+            <Text>- Material: {result["Product Details"]?.Material || 'N/A'}</Text>
+            <Text>- Cost (INR): {result["Product Details"]?.Cost || 'N/A'}</Text>
+          </View>
+
+          {/* Supply Chain Details */}
+          <View className="bg-white p-4 rounded-lg shadow mb-4">
+            <Text className="text-lg font-bold mb-2">Supply Chain Details</Text>
+
+            {/* Raw Materials */}
+            <Text className="text-md font-semibold mb-1">Raw Materials:</Text>
+            {result["Supply Chain Details"]?.["Raw Materials"] ? (
+              renderPointwiseDetails(result["Supply Chain Details"]["Raw Materials"])
+            ) : (
+              <Text className="text-gray-600 ml-4">• N/A</Text>
+            )}
+
+            {/* Manufacturing */}
+            <Text className="text-md font-semibold mt-2 mb-1">Manufacturing:</Text>
+            <Text>
+              - Processes:{' '}
+              {result["Supply Chain Details"]?.Manufacturing?.Processes || 'N/A'}
+            </Text>
+            <Text>- Hubs: {result["Supply Chain Details"]?.Manufacturing?.Hubs || 'N/A'}</Text>
+
+            {/* Distribution */}
+            <Text className="text-md font-semibold mt-2 mb-1">Distribution:</Text>
+            <Text>
+              - Channels: {result["Supply Chain Details"]?.Distribution?.Channels || 'N/A'}
+            </Text>
+          </View>
         </ScrollView>
       )}
     </View>
