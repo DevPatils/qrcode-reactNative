@@ -4,6 +4,7 @@ import { router } from 'expo-router';
 import CustomButton from '@/components/CustomButton';
 import axios from 'axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { BASE_URL } from '@/constants/url';
 
 const Signup = () => {
   const [username, setUsername] = useState('');
@@ -17,7 +18,7 @@ const Signup = () => {
     }
 
     try {
-      const response = await axios.post('https://6493-2405-201-2011-94-9cd5-18bf-5edd-ca76.ngrok-free.app/user/signUp', {
+      const response = await axios.post(`${BASE_URL}/user/signUp`, {
         name: username,
         email,
         password,

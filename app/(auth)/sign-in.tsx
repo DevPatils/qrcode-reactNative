@@ -4,6 +4,7 @@ import { router } from 'expo-router';
 import CustomButton from '@/components/CustomButton';
 import axios from 'axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { BASE_URL } from '@/constants/url';
 
 const Signin = () => {
   const [email, setEmail] = useState('');
@@ -16,12 +17,13 @@ const Signin = () => {
     }
 
     try {
-      const response = await axios.post('https://6493-2405-201-2011-94-9cd5-18bf-5edd-ca76.ngrok-free.app/user/login', { email, password });
+      const response = await axios.post(`${BASE_URL}/user/login`, { email, password });
       console.log(response.data);
 
       if (response.data.token) {
         await AsyncStorage.setItem('token', response.data.token);
         Alert.alert('Success', 'Sign In successful!');
+        router.replace('/scan');
       } else {
         Alert.alert('Error', 'Invalid credentials!');
       }
