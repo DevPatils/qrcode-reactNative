@@ -14,12 +14,13 @@ import {
 import * as ImagePicker from 'expo-image-picker';
 import axios from 'axios';
 import Icon from 'react-native-vector-icons/MaterialIcons';
+import { BASE_URL } from '@/constants/url';
 
 export default function Index() {
   const [image, setImage] = useState<string | null>(null);
   const [predictionResult, setPredictionResult] = useState<any>(null);
   const [loading, setLoading] = useState(false);
-  const baseUrl = 'https://c5ed-49-43-33-162.ngrok-free.app';
+  const baseUrl = BASE_URL;
 
   const requestPermission = async (type: 'camera' | 'mediaLibrary') => {
     const { status } =
