@@ -37,7 +37,7 @@ const LandingPage = () => {
 
       {/* Tagline */}
       <Text className="text-lg text-green-900 bg-yellow-100 px-6 py-3 border-4 border-black mb-7 rounded-md shadow-brutal text-center">
-        Redefining sustainability, one product at a time.
+        Redefining sustainability {'\n'}one product at a time.
       </Text>
 
       {/* Description */}

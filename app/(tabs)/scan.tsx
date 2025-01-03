@@ -12,7 +12,7 @@ import * as ImagePicker from 'expo-image-picker';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import axios from 'axios';
 import mime from 'mime';
-import { BASE_URL } from '@/constants/url'; // Make sure this is set correctly
+import { BASE_URL } from '@/constants/url'; 
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import CustomButton from '@/components/CustomButton';
 import { router } from 'expo-router';

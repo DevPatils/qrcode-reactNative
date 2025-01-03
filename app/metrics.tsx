@@ -2,8 +2,9 @@ import React, { useState, useEffect } from 'react';
 import { View, Text, ActivityIndicator } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import axios from 'axios';
-import { BASE_URL } from '@/constants/url'; // Ensure this is set
+import { BASE_URL } from '@/constants/url'; 
 import { router } from 'expo-router';
+import CustomButton from '@/components/CustomButton';
 
 export default function Metrics() {
   const [metrics, setMetrics] = useState<any>(null);
@@ -11,8 +12,8 @@ export default function Metrics() {
   const [error, setError] = useState<string | null>(null);
   const [productDetails, setProductDetails] = useState<any>(null);
 
-  const navigateToMetrics = () => {
-    router.replace('/metrics'); 
+  const navigateToRecycle = () => {
+    router.replace('/recyclingMethods'); 
   };
 
   useEffect(() => {
@@ -90,6 +91,14 @@ export default function Metrics() {
           <Text>- Energy Consumption: {metrics.energyConsumption || 'N/A'}</Text>
         </View>
       )}
+
+<CustomButton
+           title="Recycling Methods"
+            handlepress={navigateToRecycle}
+            containerStyles="bg-green-600 w-80 py-4 border-4 border-black rounded-md shadow-brutal mt-4"
+            textStyles="text-white font-bold text-lg"
+            isLoading={false}
+        />
     </View>
   );
 }
