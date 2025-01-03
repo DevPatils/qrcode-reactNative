@@ -31,7 +31,7 @@ const Signup = () => {
         setEmail('');
         setPassword('');
         await AsyncStorage.setItem('token', response.data.token);
-       router.replace('/scan');
+        router.replace('/scan');
       } else {
         Alert.alert('Error', 'Failed to create user!');
       }
@@ -42,15 +42,15 @@ const Signup = () => {
   };
 
   return (
-    <View className="flex flex-1 bg-yellow-200 justify-center items-center p-5">
+    <View className="flex flex-1 bg-white justify-center items-center p-5">
       {/* Header */}
-      <Text className="text-5xl font-bold text-green-800 uppercase tracking-wide mb-5 bg-white border-4 border-black p-2 shadow-brutal">
+      <Text style={{fontFamily : "gilroy-bold"}} className="text-5xl text-pea-green-900 uppercase tracking-wide mb-5 bg-white p-2">
         Sign Up
       </Text>
 
       {/* Username Input */}
       <TextInput
-        className="w-80 border-black border-4 p-4 bg-yellow-100 focus:outline-none focus:shadow-[4px_4px_0px_rgba(0,0,0,1)] focus:bg-white mb-5"
+        className="w-80 p-4 bg-green-pea-100 rounded-xl focus:outline-none focus:shadow-[4px_4px_0px_rgba(0,0,0,1)] focus:bg-white mb-5"
         placeholder="Username"
         placeholderTextColor="#666"
         value={username}
@@ -59,7 +59,7 @@ const Signup = () => {
 
       {/* Email Input */}
       <TextInput
-        className="w-80 border-black border-4 p-4 bg-yellow-100 focus:outline-none focus:shadow-[4px_4px_0px_rgba(0,0,0,1)] focus:bg-white mb-5"
+        className="w-80 p-4 bg-green-pea-100 rounded-xl focus:outline-none focus:shadow-[4px_4px_0px_rgba(0,0,0,1)] focus:bg-white mb-5"
         placeholder="Email"
         placeholderTextColor="#666"
         keyboardType="email-address"
@@ -69,7 +69,7 @@ const Signup = () => {
 
       {/* Password Input */}
       <TextInput
-        className="w-80 border-black border-4 p-4 bg-yellow-100 focus:outline-none focus:shadow-[4px_4px_0px_rgba(0,0,0,1)] focus:bg-white mb-7"
+        className="w-80 p-4 bg-green-pea-100 rounded-xl focus:outline-none focus:shadow-[4px_4px_0px_rgba(0,0,0,1)] focus:bg-white mb-7"
         placeholder="Password"
         placeholderTextColor="#666"
         secureTextEntry
@@ -81,7 +81,7 @@ const Signup = () => {
       <CustomButton
         title="Sign Up"
         handlepress={handleSignup}
-        containerStyles="bg-green-600 w-80 py-4 border-4 border-black rounded-md shadow-brutal"
+        containerStyles="bg-green-pea-600 w-80 py-4 rounded-md shadow-brutal"
         textStyles="text-white font-bold text-lg"
         isLoading={false}
       />
@@ -92,7 +92,7 @@ const Signup = () => {
         <CustomButton
           title="Sign In"
           handlepress={() => router.push('/sign-in')}
-          containerStyles="bg-blue-500 w-80 py-3 border-4 border-black rounded-md shadow-brutal"
+          containerStyles="bg-blue-500 w-80 py-3 rounded-md shadow-brutal"
           textStyles="text-white font-bold text-lg"
           isLoading={false}
         />
