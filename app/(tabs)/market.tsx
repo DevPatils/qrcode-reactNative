@@ -1,12 +1,10 @@
-import { View, Text } from 'react-native'
-import React from 'react'
+import React, { useEffect, useState } from 'react';
+import { Text } from 'react-native';
 
-const market = () => {
+const Market = () => {
   return (
-    <View>
-      <Text>market</Text>
-    </View>
-  )
-}
+    <Text>Market</Text>
+  );
+};
 
-export default market
+export default Market;

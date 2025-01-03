@@ -14,6 +14,8 @@ import axios from 'axios';
 import mime from 'mime';
 import { BASE_URL } from '@/constants/url'; // Make sure this is set correctly
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import CustomButton from '@/components/CustomButton';
+import { router } from 'expo-router';
 
 export default function ScanImagePage() {
   const [image, setImage] = useState<string | null>(null);
@@ -32,6 +34,11 @@ export default function ScanImagePage() {
 
     return status === 'granted';
   };
+
+  const navigateToMetrics = () => {
+    router.replace('/metrics'); 
+};
+
 
   const handleImageSelection = async () => {
     const hasPermission = await requestPermission('camera');
@@ -117,6 +124,17 @@ export default function ScanImagePage() {
     setImage(null);
     setResult(null);
   };
+
+  const clearAsyncStorageKeys = async () => {
+    try {
+      await AsyncStorage.multiRemove(['cost', 'name', 'type', 'material', 'size']);
+      Alert.alert('Success', 'Storage cleared successfully!');
+    } catch (error) {
+      console.error('Error clearing AsyncStorage:', error);
+      Alert.alert('Error', 'Failed to clear storage.');
+    }
+  };
+  
 
   const renderPointwiseDetails = (data: any) => {
     return Object.keys(data).map((key) => (
@@ -251,6 +269,28 @@ export default function ScanImagePage() {
       </View>
     </ScrollView>
   )}
+  <CustomButton
+    title="Clear Storage"
+    handlepress={clearAsyncStorageKeys}
+    containerStyles="bg-red-500 p-4 rounded-lg"
+    textStyles="text-white font-bold"
+    isLoading={false}
+  />
+  <CustomButton
+    title="Navigate to Market"
+    handlepress={() => router.replace('/market')}
+    containerStyles="bg-green-500 p-4 rounded-lg"
+    textStyles="text-white font-bold"
+    isLoading={false}
+  />
+  <CustomButton
+           title="View Environmental Metrics"
+            handlepress={navigateToMetrics}
+            containerStyles="bg-green-600 w-80 py-4 border-4 border-black rounded-md shadow-brutal mt-4"
+            textStyles="text-white font-bold text-lg"
+            isLoading={false}
+        />
+
 </View>
 
   );
