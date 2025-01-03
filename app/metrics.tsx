@@ -53,7 +53,7 @@ export default function Metrics() {
           material,
           cost,
         });
-
+        console.log('Fetched metrics:', response.data);
         setMetrics(response.data);
       } catch (error) {
         setError('Failed to fetch metrics');
