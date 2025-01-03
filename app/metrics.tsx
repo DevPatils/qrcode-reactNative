@@ -1,104 +1,150 @@
+import { View, Text, ScrollView, StyleSheet } from 'react-native';
 import React, { useState, useEffect } from 'react';
-import { View, Text, ActivityIndicator } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import axios from 'axios';
-import { BASE_URL } from '@/constants/url'; 
-import { router } from 'expo-router';
 import CustomButton from '@/components/CustomButton';
+import { router } from 'expo-router';
 
-export default function Metrics() {
-  const [metrics, setMetrics] = useState<any>(null);
-  const [loading, setLoading] = useState<boolean>(true);
-  const [error, setError] = useState<string | null>(null);
-  const [productDetails, setProductDetails] = useState<any>(null);
+const Metrics = () => {
+  const [data, setData] = useState(null);
+  const [loading, setLoading] = useState(true);
 
-  const navigateToRecycle = () => {
-    router.replace('/recyclingMethods'); 
+  // Retrieve values from AsyncStorage
+  const getProductDetailsFromStorage = async () => {
+    try {
+      
+      const name = await AsyncStorage.getItem('name');
+      const type = await AsyncStorage.getItem('type');
+      const material = await AsyncStorage.getItem('material');
+
+      const size = await AsyncStorage.getItem('size');
+    
+      console.log('name:', name);
+      console.log('type:', type);
+      console.log('material:', material);
+      console.log('size:', size);
+      if ( name && type && material && size) {
+        return {
+          
+          name,
+          type,
+          material,
+          size,
+        };
+      } else {
+        console.log('Error: Missing some product details in AsyncStorage');
+        return null;
+      }
+    } catch (error) {
+      console.error('Error retrieving data from AsyncStorage:', error);
+      return null;
+    }
   };
 
   useEffect(() => {
     const fetchData = async () => {
-      try {
-        // Fetch product details from AsyncStorage
-        const name = await AsyncStorage.getItem('name');
-        const size = await AsyncStorage.getItem('size');
-        const type = await AsyncStorage.getItem('type');
-        const material = await AsyncStorage.getItem('material');
-        const cost = await AsyncStorage.getItem('cost');
+      const productDetails = await getProductDetailsFromStorage();
 
-        // Log values for debugging
-        console.log('Fetched values from AsyncStorage:', { name, size, type, material, cost });
-
-        // Store the details in state
-        setProductDetails({
-          name: name || 'N/A',
-          size: size || 'N/A',
-          type: type || 'N/A',
-          material: material || 'N/A',
-          cost: cost || 'N/A',
-        });
-
-        // Check if all necessary data is available
-        if (!name || !size || !type || !material || !cost) {
-          setError('Missing product details');
+      if (productDetails) {
+        try {
+          const response = await fetch('https://sustain-server-hndkbfg6c8gvgwcc.southindia-01.azurewebsites.net/metricsImage', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(productDetails),
+          });
+          const jsonData = await response.json();
+          setData(jsonData); // Set the response data
+        } catch (error) {
+          console.error('Error fetching data:', error);
+        } finally {
           setLoading(false);
-          return;
         }
-
-        // Make the API call if all data is available
-        const response = await axios.post(`${BASE_URL}/fetchMetrics`, {
-          name,
-          size,
-          type,
-          material,
-          cost,
-        });
-        console.log('Fetched metrics:', response.data);
-        setMetrics(response.data);
-      } catch (error) {
-        setError('Failed to fetch metrics');
-      } finally {
-        setLoading(false);
       }
     };
 
     fetchData();
   }, []);
+  const handleRecycle=()=>{
+    router.replace('/recyclingMethods');
+  }
+  if (loading) {
+    return <Text>Loading...</Text>;
+  }
 
   return (
-    <View className="flex-1 bg-white p-4">
-      
-    
+    <ScrollView contentContainerStyle={styles.container}>
+      <Text style={styles.title}>Environmental Benefits of Recycling</Text>
+      <Text style={styles.productName}>{data.product}</Text>
 
-      {/* Render Product Details */}
-      {productDetails && (
-        <View className="mb-4">
-          <Text className="text-xl font-bold">Product Details</Text>
-          <Text>Name: {productDetails.name}</Text>
-          <Text>Size: {productDetails.size}</Text>
-          <Text>Type: {productDetails.type}</Text>
-          <Text>Material: {productDetails.material}</Text>
-          <Text>Cost: {productDetails.cost}</Text>
-        </View>
-      )}
 
-      {/* Render Environmental Metrics */}
-      {metrics && (
-        <View>
-          <Text className="text-xl font-bold">Environmental Metrics</Text>
-          <Text>- Carbon Footprint: {metrics.carbonFootprint || 'N/A'}</Text>
-          <Text>- Water Usage: {metrics.waterUsage || 'N/A'}</Text>
-          <Text>- Energy Consumption: {metrics.energyConsumption || 'N/A'}</Text>
-        </View>
-      )}
+      <View style={styles.benefitContainer}>
+        <Text style={styles.subTitle}>Carbon Emissions Saved: {data.environmental_benefits.carbon_emissions_saved.estimate} {data.environmental_benefits.carbon_emissions_saved.unit}</Text>
+        <Text>{data.environmental_benefits.carbon_emissions_saved.explanation}</Text>
+      </View>
 
-<CustomButton
-           title="Recycling Methods"
-            handlepress={navigateToRecycle}
-            containerStyles="bg-green-600 w-80 py-4 border-4 border-black rounded-md shadow-brutal mt-4"
-            textStyles="text-white font-bold text-lg"
-            isLoading={false}
-        />
-    </View>
+      <View style={styles.benefitContainer}>
+        <Text style={styles.subTitle}>Trees Saved: {data.environmental_benefits.trees_saved.estimate} {data.environmental_benefits.trees_saved.unit}</Text>
+        <Text>{data.environmental_benefits.trees_saved.explanation}</Text>
+      </View>
+
+      <View style={styles.benefitContainer}>
+        <Text style={styles.subTitle}>Water Saved: {data.environmental_benefits.water_saved.estimate} {data.environmental_benefits.water_saved.unit}</Text>
+        <Text>{data.environmental_benefits.water_saved.explanation}</Text>
+      </View>
+
+      <View style={styles.benefitContainer}>
+        <Text style={styles.subTitle}>Energy Saved: {data.environmental_benefits.energy_saved.estimate} {data.environmental_benefits.energy_saved.unit}</Text>
+        <Text>{data.environmental_benefits.energy_saved.explanation}</Text>
+      </View>
+
+      <View style={styles.benefitContainer}>
+        <Text style={styles.subTitle}>Landfill Space Saved: {data.environmental_benefits.landfill_space_saved.estimate} {data.environmental_benefits.landfill_space_saved.unit}</Text>
+        <Text>{data.environmental_benefits.landfill_space_saved.explanation}</Text>
+      </View>
+
+      <Text style={styles.disclaimer}>{data.environmental_benefits.disclaimer}</Text>
+    <CustomButton
+     title='find recycling methods'
+      handlepress={handleRecycle}
+      containerStyles='margin-top: 20px;'
+      textStyles='color: white;'
+      isLoading={false}
+     />
+    </ScrollView>
   );
-}
+};
+
+const styles = StyleSheet.create({
+  container: {
+    padding: 20,
+  },
+  title: {
+    fontSize: 24,
+    fontWeight: 'bold',
+    marginBottom: 10,
+  },
+  productName: {
+    fontSize: 20,
+    fontWeight: 'bold',
+    marginBottom: 10,
+  },
+  cost: {
+    fontSize: 18,
+    marginBottom: 20,
+  },
+  benefitContainer: {
+    marginBottom: 20,
+  },
+  subTitle: {
+    fontSize: 18,
+    fontWeight: 'bold',
+  },
+  disclaimer: {
+    fontSize: 14,
+    marginTop: 20,
+    color: 'gray',
+  },
+});
+
+export default Metrics;
