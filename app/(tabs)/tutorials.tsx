@@ -84,7 +84,7 @@ const Tutorial = () => {
           part: 'snippet',
           maxResults: 10,
           q: query,
-          key: "AIzaSyDoVneLwDPj-u3gALxJDIByjW4N1493pFA",
+          key: "AIzaSyAZXy3kA17THUpcmGEomGO2PTaMhecZJuU",
         },
       }
       );
@@ -101,15 +101,6 @@ const Tutorial = () => {
       </View>
     );
   }
-  const renderProductDetail = (label: string, value: string, icon: string) => (
-    <View className="flex-row items-center bg-white p-4 rounded-xl mb-3 shadow-sm">
-      <MaterialIcons name={icon} size={24} color="#06281b" style={{ marginRight: 12 }} />
-      <View>
-        <Text className="text-sm text-gray-500">{label}</Text>
-        <Text className="text-lg font-semibold text-gray-800">{value}</Text>
-      </View>
-    </View>
-  );
 
   if (loading) {
     return (
