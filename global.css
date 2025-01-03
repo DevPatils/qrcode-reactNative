@@ -1,3 +1,33 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+@font-face{
+  font-family: 'gilroy-medium';
+  src : local('gilroy-medium'),url('./assets/fonts/Gilroy-Medium.ttf') format('truetype');
+}
+
+@font-face{
+  font-family: 'gilroy-medium-italic';
+  src : local('gilroy-medium-italic'),url('./assets/fonts/Gilroy-MediumItalic.ttf') format('truetype');
+}
+
+@font-face{
+  font-family: 'gilroy-regular';
+  src : local('gilroy-regular'),url('./assets/fonts/Gilroy-Regular.ttf') format('truetype');
+}
+
+@font-face{
+  font-family: 'gilroy-regular-italic';
+  src : local('gilroy-regular-italic'),url('./assets/fonts/Gilroy-RegularItalic.ttf') format('truetype');
+}
+
+@font-face{
+  font-family: 'gilroy-light';
+  src : local('gilroy-light'),url('./assets/fonts/Gilroy-Light.otf') format('opentype');
+}
+
+@font-face{
+  font-family: 'gilroy-bold';
+  src : local('gilroy-bold'),url('./assets/fonts/Gilroy-ExtraBold.otf') format('opentype');
+}
