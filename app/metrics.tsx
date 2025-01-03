@@ -3,6 +3,7 @@ import React, { useState, useEffect } from 'react';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import CustomButton from '@/components/CustomButton';
 import { router } from 'expo-router';
+import CustomButton from '@/components/CustomButton';
 
 const Metrics = () => {
   const [data, setData] = useState(null);
