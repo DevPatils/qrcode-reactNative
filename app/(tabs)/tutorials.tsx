@@ -12,8 +12,16 @@ const Tutorial = () => {
     cost: '',
   });
   const [loading, setLoading] = useState(true);
-  const [videos, setVideos] = useState([]);
-
+  interface YouTubeVideo {
+    id: { videoId: string };
+    snippet: {
+      title: string;
+      channelTitle: string;
+    };
+  }
+  
+  const [videos, setVideos] = useState<YouTubeVideo[]>([]);
+  
   const YOUTUBE_API_KEY = 'AIzaSyDoVneLwDPj-u3gALxJDIByjW4N1493pFA';
 
   useEffect(() => {
