@@ -35,6 +35,11 @@ export default function ScanImagePage() {
     return status === 'granted';
   };
 
+  const navigateToMetrics = () => {
+    router.replace('/metrics'); 
+};
+
+
   const handleImageSelection = async () => {
     const hasPermission = await requestPermission('camera');
     if (!hasPermission) return;
@@ -278,6 +283,14 @@ export default function ScanImagePage() {
     textStyles="text-white font-bold"
     isLoading={false}
   />
+  <CustomButton
+           title="View Environmental Metrics"
+            handlepress={navigateToMetrics}
+            containerStyles="bg-green-600 w-80 py-4 border-4 border-black rounded-md shadow-brutal mt-4"
+            textStyles="text-white font-bold text-lg"
+            isLoading={false}
+        />
+
 </View>
 
   );

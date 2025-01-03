@@ -14,7 +14,7 @@ const Tutorial = () => {
   const [loading, setLoading] = useState(true);
   const [videos, setVideos] = useState([]);
   
-  const YOUTUBE_API_KEY = 'YOUR_YOUTUBE_API_KEY';
+  const YOUTUBE_API_KEY = 'AIzaSyDoVneLwDPj-u3gALxJDIByjW4N1493pFA';
 
   useEffect(() => {
     const fetchDetails = async () => {
