@@ -36,8 +36,8 @@ export default function ScanImagePage() {
   };
 
   const navigateToMetrics = () => {
-    router.replace('/metrics'); 
-};
+    router.replace('/metrics');
+  };
 
 
   const handleImageSelection = async () => {
@@ -72,6 +72,7 @@ export default function ScanImagePage() {
     });
 
     try {
+      console.log('file uploading')
       const response = await axios.post(`${BASE_URL}/predictimage`, formData, {
         headers: {
           'Content-Type': 'multipart/form-data',
@@ -134,7 +135,7 @@ export default function ScanImagePage() {
       Alert.alert('Error', 'Failed to clear storage.');
     }
   };
-  
+
 
   const renderPointwiseDetails = (data: any) => {
     return Object.keys(data).map((key) => (
@@ -148,8 +149,8 @@ export default function ScanImagePage() {
       </View>
     ));
   };
-  
-  
+
+
   const renderCost = (cost: any) => {
     if (cost && typeof cost === 'object') {
       return (
@@ -161,13 +162,13 @@ export default function ScanImagePage() {
     }
     return <Text>- Cost: {cost || 'N/A'}</Text>;
   };
-  
-  
+
+
   const renderSupplyChainDetails = (data: any) => {
     return (
       <View className="bg-white p-4 rounded-lg shadow mb-4">
         <Text className="text-lg font-bold mb-2">Supply Chain Details</Text>
-  
+
         {/* Raw Materials */}
         <Text className="text-md font-semibold mb-1">Raw Materials:</Text>
         {data["Raw Materials"] ? (
@@ -175,8 +176,7 @@ export default function ScanImagePage() {
         ) : (
           <Text className="text-gray-600 ml-4">• N/A</Text>
         )}
-  
-        {/* Manufacturing */}
+
         <Text className="text-md font-semibold mt-2 mb-1">Manufacturing:</Text>
         <Text>
           - Processes:{" "}
@@ -190,108 +190,86 @@ export default function ScanImagePage() {
             ? data.Manufacturing?.Hubs.join(", ")
             : data.Manufacturing?.Hubs || "N/A"}
         </Text>
-  
-        {/* Distribution */}
-        {/* <Text className="text-md font-semibold mt-2 mb-1">Distribution:</Text>
-        <Text>
-          - Channels:{" "}
-          {Array.isArray(data.Distribution?.channels)
-            ? data.Distribution?.channels.join(", ")
-            : data.Distribution?.channels || "N/A"}
-        </Text> */}
       </View>
     );
   };
-  
-  
+
+
 
   return (
-<View className="flex-1 bg-white">
-  {/* Header */}
-  <View className="flex-row justify-between items-center px-4 py-3 mt-10 border-b-4 border-black">
-    <TouchableOpacity onPress={discardImage}>
-      <Icon name="close" size={24} color="black" />
-    </TouchableOpacity>
-    <Text style={{fontFamily : "gilroy-bold"}} className="text-xl text-black uppercase tracking-wider">
-      Scan your product
-    </Text>
-    <TouchableOpacity onPress={uploadImage}>
-      <Icon name="check" size={24} color="black" />
-    </TouchableOpacity>
-  </View>
-
-  {/* Main Section */}
-  <View className="flex-1 justify-center items-center p-4">
-    {image ? (
-      <Image
-        source={{ uri: image }}
-        className="w-64 h-64 rounded-lg border-4 border-black"
-      />
-    ) : (
-      <TouchableOpacity
-        onPress={handleImageSelection}
-        className="bg-slate-50 w-64 h-64 rounded-lg border-4 border-black flex items-center justify-center shadow-lg">
-        <Icon name="camera-alt" size={48} color="black" />
-        <Text className="text-black font-bold mt-2 uppercase">Tap to Scan</Text>
-      </TouchableOpacity>
-    )}
-
-    {loading && (
-      <ActivityIndicator size="large" color="black" className="mt-4" />
-    )}
-  </View>
-
-  {/* Results Section */}
-  {result && (
-    <ScrollView className="bg-white p-4 border-t-4 border-black shadow-lg rounded-t-2xl">
-      <Text className="text-center text-xl font-bold mb-4 uppercase tracking-wide">
-        Prediction Details
-      </Text>
-
-      {/* Product Details */}
-      <View className="bg-blue-200 p-4 border-4 border-black rounded-lg shadow mb-4">
-        <Text className="text-lg font-bold uppercase mb-2">
-          Product Details
+    <View className="flex-1 bg-white">
+      {/* Header */}
+      <View className="flex-row justify-between items-center px-4 py-3 mt-10 border-b-4 border-black">
+        <TouchableOpacity onPress={discardImage}>
+          <Icon name="close" size={24} color="black" />
+        </TouchableOpacity>
+        <Text style={{ fontFamily: "gilroy-bold" }} className="text-xl text-black uppercase tracking-wider">
+          Scan your product
         </Text>
-        <Text>- Name: {result["Product Details"]?.Name || "N/A"}</Text>
-        <Text>- Size: {result["Product Details"]?.Size || "N/A"}</Text>
-        <Text>- Type: {result["Product Details"]?.Type || "N/A"}</Text>
-        <Text>- Material: {result["Product Details"]?.Material || "N/A"}</Text>
-        {renderCost(result["Product Details"]?.Cost)}
+        <TouchableOpacity onPress={uploadImage}>
+          <Icon name="check" size={24} color="black" />
+        </TouchableOpacity>
       </View>
 
-      {/* Supply Chain Details */}
-      <View className="bg-pink-200 p-4 border-4 border-black rounded-lg shadow mb-4">
-        <Text className="text-lg font-bold uppercase mb-2">
-          Supply Chain Details
-        </Text>
-        {renderSupplyChainDetails(result["Supply Chain Details"])}
-      </View>
-    </ScrollView>
-  )}
-  <CustomButton
-    title="Clear Storage"
-    handlepress={clearAsyncStorageKeys}
-    containerStyles="bg-red-500 p-4 rounded-lg"
-    textStyles="text-white font-bold"
-    isLoading={false}
-  />
-  <CustomButton
-    title="Navigate to Market"
-    handlepress={() => router.replace('/market')}
-    containerStyles="bg-green-500 p-4 rounded-lg"
-    textStyles="text-white font-bold"
-    isLoading={false}
-  />
-  <CustomButton
-           title="View Environmental Metrics"
-            handlepress={navigateToMetrics}
-            containerStyles="bg-green-600 w-80 py-4 border-4 border-black rounded-md shadow-brutal mt-4"
-            textStyles="text-white font-bold text-lg"
-            isLoading={false}
-        />
+      {/* Main Section */}
+      <View className="flex-1 justify-center items-center p-4">
+        {image ? (
+          <Image
+            source={{ uri: image }}
+            className="w-64 h-64 rounded-lg border-4 border-black"
+          />
+        ) : (
+          <TouchableOpacity
+            onPress={handleImageSelection}
+            className="bg-slate-50 w-64 h-64 rounded-lg border-4 border-black flex items-center justify-center shadow-lg">
+            <Icon name="camera-alt" size={48} color="black" />
+            <Text className="text-black font-bold mt-2 uppercase">Tap to Scan</Text>
+          </TouchableOpacity>
+        )}
 
-</View>
+        {loading && (
+          <ActivityIndicator size="large" color="black" className="mt-4" />
+        )}
+      </View>
+
+      {/* Results Section */}
+      {result && (
+        <ScrollView className="bg-white px-4 pb-16 border-t-4 border-black shadow-lg rounded-t-2xl">
+          <View className='flex flex-col w-full justify-center items-center'>
+            <Text className="text-center text-xl font-bold my-4 uppercase tracking-wide">
+              Prediction Details
+            </Text>
+            {/* Product Details */}
+            <View className="bg-blue-200 p-4 border-4 border-black rounded-lg shadow mb-4">
+              <Text className="text-lg font-bold uppercase mb-2">
+                Product Details
+              </Text>
+              <Text>- Name: {result["Product Details"]?.Name || "N/A"}</Text>
+              <Text>- Size: {result["Product Details"]?.Size || "N/A"}</Text>
+              <Text>- Type: {result["Product Details"]?.Type || "N/A"}</Text>
+              <Text>- Material: {result["Product Details"]?.Material || "N/A"}</Text>
+              {renderCost(result["Product Details"]?.Cost)}
+            </View>
+
+            {/* Supply Chain Details */}
+            <View className="bg-pink-200 p-4 border-4 border-black rounded-lg shadow mb-4">
+              <Text className="text-lg font-bold uppercase mb-2">
+                Supply Chain Details
+              </Text>
+              {renderSupplyChainDetails(result["Supply Chain Details"])}
+            </View>
+            <CustomButton
+              title="View Environmental Metrics"
+              handlepress={navigateToMetrics}
+              containerStyles="bg-green-600 w-80 py-4 border-4 border-black rounded-md shadow-brutal mb-4"
+              textStyles="text-white font-bold text-lg"
+              isLoading={false}
+            />
+          </View>
+        </ScrollView>
+      )}
+
+    </View>
 
   );
 }
