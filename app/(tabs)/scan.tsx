@@ -13,6 +13,7 @@ import Icon from 'react-native-vector-icons/MaterialIcons';
 import axios from 'axios';
 import mime from 'mime';
 import { BASE_URL } from '@/constants/url'; // Make sure this is set correctly
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 export default function ScanImagePage() {
   const [image, setImage] = useState<string | null>(null);
@@ -56,6 +57,7 @@ export default function ScanImagePage() {
     const newImageUri = image.startsWith('file://') ? image : `file://${image}`;
 
     const formData = new FormData();
+    // @ts-expect-error
     formData.append('image', {
       uri: newImageUri,
       type: mime.getType(newImageUri) || 'image/jpeg', // Default to image/jpeg if undefined
@@ -72,19 +74,37 @@ export default function ScanImagePage() {
 
       // Parse the backend response (which is a cleaned-up string)
       const cleanedResponse = response.data;
+
       let parsedResult = {};
 
       // Try to parse as JSON (if it follows JSON structure)
       try {
         parsedResult = JSON.parse(cleanedResponse);
+        // @ts-expect-error
+        console.log(parsedResult['Product Details']);
+        // name, size, type, material, cost 
+
+        //@ts-expect-error
+        AsyncStorage.setItem('cost', parsedResult['Product Details'].Cost.estimate);
+        //@ts-expect-error
+        AsyncStorage.setItem('name', parsedResult['Product Details'].Name);
+        //@ts-expect-error
+
+        AsyncStorage.setItem('type', parsedResult['Product Details'].Type);
+        //@ts-expect-error
+
+        AsyncStorage.setItem('material', parsedResult['Product Details'].Material);
+        //@ts-expect-error
+
+        AsyncStorage.setItem('size', parsedResult['Product Details'].Size);
+
+
       } catch (error) {
         console.error('Failed to parse response:', error);
         alert('Failed to parse the prediction result.');
       }
 
       setResult(parsedResult);  // Set the parsed result
-
-      console.log(parsedResult);
     } catch (error) {
       console.error('Error uploading image:', error);
       alert('Error uploading image.');
@@ -116,8 +136,8 @@ export default function ScanImagePage() {
     if (cost && typeof cost === 'object') {
       return (
         <View>
-          <Text>- Estimated Price: {cost.estimate ? cost.estimate : 'N/A'}</Text>
-          <Text>- Note: {cost.note ? cost.note : 'N/A'}</Text>
+          {/* <Text>- Estimated Price: {cost.estimate ? cost.estimate : 'N/A'}</Text>
+          <Text>- Note: {cost.note ? cost.note : 'N/A'}</Text> */}
         </View>
       );
     }
@@ -154,13 +174,13 @@ export default function ScanImagePage() {
         </Text>
   
         {/* Distribution */}
-        <Text className="text-md font-semibold mt-2 mb-1">Distribution:</Text>
+        {/* <Text className="text-md font-semibold mt-2 mb-1">Distribution:</Text>
         <Text>
           - Channels:{" "}
           {Array.isArray(data.Distribution?.channels)
             ? data.Distribution?.channels.join(", ")
             : data.Distribution?.channels || "N/A"}
-        </Text>
+        </Text> */}
       </View>
     );
   };
@@ -168,57 +188,70 @@ export default function ScanImagePage() {
   
 
   return (
-    <View className="flex-1 bg-green-200">
-      {/* Header */}
-      <View className="flex-row justify-between items-center px-4 py-3 mt-10">
-        <TouchableOpacity onPress={discardImage}>
-          <Icon name="close" size={24} color="black" />
-        </TouchableOpacity>
-        <Text className="text-lg font-bold text-black">Scan your product</Text>
-        <TouchableOpacity onPress={uploadImage}>
-          <Icon name="check" size={24} color="black" />
-        </TouchableOpacity>
-      </View>
-  
-      <View className="flex-1 justify-center items-center">
-        {image ? (
-          <Image source={{ uri: image }} className="w-64 h-64 rounded-lg" />
-        ) : (
-          <TouchableOpacity
-            onPress={handleImageSelection}
-            className="bg-green-300 w-64 h-64 rounded-lg border-4 border-dashed border-gray-600 flex items-center justify-center">
-            <Icon name="camera-alt" size={48} color="gray" />
-            <Text className="text-gray-700 mt-2">Tap to Scan</Text>
-          </TouchableOpacity>
-        )}
-  
-        {loading && <ActivityIndicator size="large" color="#000" className="mt-4" />}
-      </View>
-  
-      {result && (
-        <ScrollView className="bg-white p-4 rounded-t-2xl shadow-lg">
-          <Text className="text-center text-xl font-bold mb-4">Prediction Details</Text>
-  
-          {/* Product Details */}
-          <View className="bg-white p-4 rounded-lg shadow mb-4">
-  <Text className="text-lg font-bold mb-2">Product Details</Text>
-  <Text>- Name: {result["Product Details"]?.Name || 'N/A'}</Text>
-  <Text>- Size: {result["Product Details"]?.Size || 'N/A'}</Text>
-  <Text>- Type: {result["Product Details"]?.Type || 'N/A'}</Text>
-  <Text>- Material: {result["Product Details"]?.Material || 'N/A'}</Text>
-          </View>
-  
-          {/* Supply Chain Details */}
-          {renderSupplyChainDetails(result["Supply Chain Details"])}
-        </ScrollView>
-      )}
+<View className="flex-1 bg-yellow-200">
+  {/* Header */}
+  <View className="flex-row justify-between items-center px-4 py-3 mt-10 border-b-4 border-black">
+    <TouchableOpacity onPress={discardImage}>
+      <Icon name="close" size={24} color="black" />
+    </TouchableOpacity>
+    <Text className="text-lg font-extrabold text-black uppercase tracking-wider">
+      Scan your product
+    </Text>
+    <TouchableOpacity onPress={uploadImage}>
+      <Icon name="check" size={24} color="black" />
+    </TouchableOpacity>
+  </View>
 
-<Text>
-    - Cost:{" "}
-    {result["Product Details"]?.Cost?.INR
-      ? JSON.stringify(result["Product Details"]?.Cost?.INR) 
-      : "N/A"}
-  </Text>
-    </View>
+  {/* Main Section */}
+  <View className="flex-1 justify-center items-center p-4">
+    {image ? (
+      <Image
+        source={{ uri: image }}
+        className="w-64 h-64 rounded-lg border-4 border-black"
+      />
+    ) : (
+      <TouchableOpacity
+        onPress={handleImageSelection}
+        className="bg-green-300 w-64 h-64 rounded-lg border-4 border-black flex items-center justify-center shadow-lg">
+        <Icon name="camera-alt" size={48} color="black" />
+        <Text className="text-black font-bold mt-2 uppercase">Tap to Scan</Text>
+      </TouchableOpacity>
+    )}
+
+    {loading && (
+      <ActivityIndicator size="large" color="black" className="mt-4" />
+    )}
+  </View>
+
+  {/* Results Section */}
+  {result && (
+    <ScrollView className="bg-white p-4 border-t-4 border-black shadow-lg rounded-t-2xl">
+      <Text className="text-center text-xl font-bold mb-4 uppercase tracking-wide">
+        Prediction Details
+      </Text>
+
+      {/* Product Details */}
+      <View className="bg-blue-200 p-4 border-4 border-black rounded-lg shadow mb-4">
+        <Text className="text-lg font-bold uppercase mb-2">
+          Product Details
+        </Text>
+        <Text>- Name: {result["Product Details"]?.Name || "N/A"}</Text>
+        <Text>- Size: {result["Product Details"]?.Size || "N/A"}</Text>
+        <Text>- Type: {result["Product Details"]?.Type || "N/A"}</Text>
+        <Text>- Material: {result["Product Details"]?.Material || "N/A"}</Text>
+        {renderCost(result["Product Details"]?.Cost)}
+      </View>
+
+      {/* Supply Chain Details */}
+      <View className="bg-pink-200 p-4 border-4 border-black rounded-lg shadow mb-4">
+        <Text className="text-lg font-bold uppercase mb-2">
+          Supply Chain Details
+        </Text>
+        {renderSupplyChainDetails(result["Supply Chain Details"])}
+      </View>
+    </ScrollView>
+  )}
+</View>
+
   );
 }
