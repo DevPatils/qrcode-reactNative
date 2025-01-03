@@ -68,7 +68,7 @@ const Tutorial = () => {
           part: 'snippet',
           maxResults: 10,
           q: query,
-          key: "AIzaSyDoVneLwDPj-u3gALxJDIByjW4N1493pFA",
+          key: "AIzaSyAZXy3kA17THUpcmGEomGO2PTaMhecZJuU",
         },
       }
       );
