@@ -32,7 +32,7 @@ const TabLayout = () => {
       <Tabs
         screenOptions={{
           tabBarShowLabel: true,
-          tabBarActiveTintColor: "#06281b", // green-pea-200 color
+          tabBarActiveTintColor: "#06281b",
           tabBarInactiveTintColor: "#000000",
           tabBarPosition: 'bottom',
           tabBarStyle: {
@@ -75,16 +75,6 @@ const TabLayout = () => {
             headerShown: false,
             tabBarIcon: ({ color, focused }) => (
               <MaterialIcons name="travel-explore" size={24} color={color} />
-            ),
-          }}
-        />
-        <Tabs.Screen
-          name="profile"
-          options={{
-            title: "Profile",
-            headerShown: false,
-            tabBarIcon: ({ color, focused }) => (
-              <AntDesign name="user" size={24} color={color} />
             ),
           }}
         />
