@@ -38,6 +38,12 @@
         {
           "photosPermission": "The app accesses your photos to let you share them with your friends."
         }
+      ],
+      [
+        "expo-font",
+        {
+          "fonts" : ["./assets/fonts/Gilroy-RegularItalic.ttf" , "./assets/fonts/Gilroy-ExtraBold.otf" , "./assets/fonts/Gilroy-Light.otf" , "./assets/fonts/Gilroy-Medium.ttf" , "./assets/fonts/Gilroy-MediumItalic.ttf" , "./assets/fonts/Gilroy-Regular.ttf" , "./assets/fonts/SpaceMono-Regular.ttf"]
+        }
       ]
     ],
     "experiments": {
