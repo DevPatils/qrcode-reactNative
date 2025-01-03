@@ -206,13 +206,13 @@ export default function ScanImagePage() {
   
 
   return (
-<View className="flex-1 bg-yellow-200">
+<View className="flex-1 bg-white">
   {/* Header */}
   <View className="flex-row justify-between items-center px-4 py-3 mt-10 border-b-4 border-black">
     <TouchableOpacity onPress={discardImage}>
       <Icon name="close" size={24} color="black" />
     </TouchableOpacity>
-    <Text className="text-lg font-extrabold text-black uppercase tracking-wider">
+    <Text style={{fontFamily : "gilroy-bold"}} className="text-xl text-black uppercase tracking-wider">
       Scan your product
     </Text>
     <TouchableOpacity onPress={uploadImage}>
@@ -230,7 +230,7 @@ export default function ScanImagePage() {
     ) : (
       <TouchableOpacity
         onPress={handleImageSelection}
-        className="bg-green-300 w-64 h-64 rounded-lg border-4 border-black flex items-center justify-center shadow-lg">
+        className="bg-slate-50 w-64 h-64 rounded-lg border-4 border-black flex items-center justify-center shadow-lg">
         <Icon name="camera-alt" size={48} color="black" />
         <Text className="text-black font-bold mt-2 uppercase">Tap to Scan</Text>
       </TouchableOpacity>
