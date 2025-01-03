@@ -1,44 +1,19 @@
 import { View, Text, ScrollView, StyleSheet } from 'react-native';
 import React, { useState, useEffect } from 'react';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import CustomButton from '@/components/CustomButton';
+import axios from 'axios';
+import { BASE_URL } from '@/constants/url'; 
 import { router } from 'expo-router';
 import CustomButton from '@/components/CustomButton';
 
-const Metrics = () => {
-  const [data, setData] = useState(null);
-  const [loading, setLoading] = useState(true);
+export default function Metrics() {
+  const [metrics, setMetrics] = useState<any>(null);
+  const [loading, setLoading] = useState<boolean>(true);
+  const [error, setError] = useState<string | null>(null);
+  const [productDetails, setProductDetails] = useState<any>(null);
 
-  // Retrieve values from AsyncStorage
-  const getProductDetailsFromStorage = async () => {
-    try {
-      
-      const name = await AsyncStorage.getItem('name');
-      const type = await AsyncStorage.getItem('type');
-      const material = await AsyncStorage.getItem('material');
-
-      const size = await AsyncStorage.getItem('size');
-    
-      console.log('name:', name);
-      console.log('type:', type);
-      console.log('material:', material);
-      console.log('size:', size);
-      if ( name && type && material && size) {
-        return {
-          
-          name,
-          type,
-          material,
-          size,
-        };
-      } else {
-        console.log('Error: Missing some product details in AsyncStorage');
-        return null;
-      }
-    } catch (error) {
-      console.error('Error retrieving data from AsyncStorage:', error);
-      return null;
-    }
+  const navigateToRecycle = () => {
+    router.replace('/recyclingMethods'); 
   };
 
   useEffect(() => {
@@ -61,6 +36,21 @@ const Metrics = () => {
         } finally {
           setLoading(false);
         }
+
+        // Make the API call if all data is available
+        const response = await axios.post(`${BASE_URL}/fetchMetrics`, {
+          name,
+          size,
+          type,
+          material,
+          cost,
+        });
+        console.log('Fetched metrics:', response.data);
+        setMetrics(response.data);
+      } catch (error) {
+        setError('Failed to fetch metrics');
+      } finally {
+        setLoading(false);
       }
     };
 
