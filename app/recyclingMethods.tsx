@@ -42,13 +42,12 @@ const RecyclingMethods = () => {
           type,
           material,
         });
-        console.log(response.data);
-        setRecyclingMethods(JSON.parse(response.data));
-        // setRecyclingMethods(response.data.recyclingMethods);
 
+        const parsedResponse = JSON.parse(response.data);
+        setRecyclingMethods(parsedResponse.recycling_methods);
       } catch (error) {
         setError('Failed to fetch recycling methods');
-        console.error(error);
+        console.error('Error:', error);
       } finally {
         setLoading(false);
       }
@@ -58,7 +57,11 @@ const RecyclingMethods = () => {
   }, []);
 
   if (loading) {
-    return <ActivityIndicator size="large" color="#0000ff" />;
+    return (
+      <View style={styles.centered}>
+        <ActivityIndicator size="large" color="#0000ff" />
+      </View>
+    );
   }
 
   if (error) {
@@ -71,75 +74,66 @@ const RecyclingMethods = () => {
 
   return (
     <ScrollView style={styles.container}>
-      <Text className='text-black' style={styles.title}>
-        {recyclingMethods}
-      </Text>
-      
+      <Text style={styles.header}>Recycling Methods for {productDetails.name}</Text>
+      {recyclingMethods.map((method, index) => (
+        <View key={index} style={styles.methodContainer}>
+          
+          <Text style={styles.methodTitle}>{method.method_name}</Text>
+          <Text style={styles.methodDescription}>{method.description}</Text>
+          <Text style={styles.stepsHeader}>Steps:</Text>
+          {method.steps.map((step, stepIndex) => (
+            <Text key={stepIndex} style={styles.step}>
+              {stepIndex + 1}. {step}
+            </Text>
+          ))}
+        </View>
+      ))}
     </ScrollView>
   );
 };
 
 const styles = StyleSheet.create({
   container: {
+    flex: 1,
     padding: 20,
-    backgroundColor: '#eaeaea',
-  },
-  title: {
-    fontSize: 22,
-    fontWeight: 'bold',
-    marginBottom: 20,
-    color: '#111',
-    textAlign: 'center',
-  },
-  methodContainer: {
-    marginBottom: 30,
-    padding: 20,
-    backgroundColor: '#fff',
-    borderRadius: 10,
-    boxShadow: '0 0 15px rgba(0, 0, 0, 0.1)',
-    borderWidth: 1,
-    borderColor: '#333',
-    marginVertical: 15,
-  },
-  methodName: {
-    fontSize: 18,
-    fontWeight: 'bold',
-    marginBottom: 10,
-    color: '#111',
-  },
-  description: {
-    fontSize: 16,
-    marginBottom: 15,
-    color: '#333',
-  },
-  stepsTitle: {
-    fontSize: 16,
-    fontWeight: 'bold',
-    color: '#111',
-    marginBottom: 10,
-  },
-  step: {
-    fontSize: 14,
-    marginLeft: 10,
-    marginBottom: 5,
-    color: '#333',
-  },
-  noMethodsText: {
-    fontSize: 16,
-    color: '#888',
-    textAlign: 'center',
-  },
-  errorText: {
-    fontSize: 18,
-    color: 'red',
-    textAlign: 'center',
   },
   centered: {
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: '#f5f5f5',
-    height: '100%',
+  },
+  header: {
+    fontSize: 24,
+    fontWeight: 'bold',
+    marginBottom: 20,
+  },
+  methodContainer: {
+    marginBottom: 20,
+    padding: 15,
+    backgroundColor: '#f9f9f9',
+    borderRadius: 10,
+  },
+  methodTitle: {
+    fontSize: 18,
+    fontWeight: 'bold',
+  },
+  methodDescription: {
+    marginTop: 5,
+    fontSize: 16,
+  },
+  stepsHeader: {
+    marginTop: 10,
+    fontSize: 16,
+    fontWeight: 'bold',
+  },
+  step: {
+    fontSize: 14,
+    marginLeft: 10,
+    marginTop: 5,
+  },
+  errorText: {
+    color: 'red',
+    fontSize: 16,
   },
 });
 
