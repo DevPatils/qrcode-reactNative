@@ -10,6 +10,7 @@ const RecyclingMethods = () => {
     size: '',
     type: '',
     material: '',
+    
   });
   const [recyclingMethods, setRecyclingMethods] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -22,6 +23,7 @@ const RecyclingMethods = () => {
         const size = await AsyncStorage.getItem('size');
         const type = await AsyncStorage.getItem('type');
         const material = await AsyncStorage.getItem('material');
+       
 
         if (!name || !size || !type || !material ) {
           setError('Missing product details');
@@ -34,6 +36,7 @@ const RecyclingMethods = () => {
           size: size || 'N/A',
           type: type || 'N/A',
           material: material || 'N/A',
+           
         });
 
         const response = await axios.post(`${BASE_URL}/recyclingMethods`, {
@@ -41,6 +44,7 @@ const RecyclingMethods = () => {
           size,
           type,
           material,
+          
         });
 
         const parsedResponse = JSON.parse(response.data);
