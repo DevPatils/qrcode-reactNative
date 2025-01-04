@@ -23,6 +23,7 @@ const LandingPage = () => {
 
       router.push('/(auth)/sign-up');
     }
+    router.push('/scan')
   }
 
   return (

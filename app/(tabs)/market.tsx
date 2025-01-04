@@ -15,7 +15,7 @@ const Market = () => {
     handleMarketData();
   } , [])
   const handlePress = () => {
-    const url = 'https://example.com';
+    const url = 'https://market-place-sand.vercel.app/';
     Linking.openURL(url);
   };
 
