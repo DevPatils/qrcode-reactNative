@@ -1,8 +1,19 @@
 import CustomButton from '@/components/CustomButton';
-import React from 'react';
+import React, { useEffect } from 'react';
 import { View, Text, Linking } from 'react-native';
+import axios from 'axios';
 
 const Market = () => {
+  
+
+  const handleMarketData = async() => {
+    const response = await axios.get('https://sustain-server-hndkbfg6c8gvgwcc.southindia-01.azurewebsites.net/market/all-products')
+    console.log(response.data.products)
+  }
+
+  useEffect(() => {
+    handleMarketData();
+  } , [])
   const handlePress = () => {
     const url = 'https://example.com';
     Linking.openURL(url);
@@ -10,10 +21,10 @@ const Market = () => {
 
   return (
     <View className="flex-1 bg-gradient-to-b from-green-500 to-green-700 justify-center items-center px-5">
-      <Text className="text-white text-3xl font-bold mb-2 text-center">
+      <Text className="text-green-pea-700 text-4xl font-bold mb-2 text-center">
         Welcome to the Market
       </Text>
-      <Text className="text-gray-200 text-lg text-center mb-6">
+      <Text className="text-neutral-500 text-lg text-center mb-6">
         Discover amazing deals and opportunities
       </Text>
       <CustomButton
