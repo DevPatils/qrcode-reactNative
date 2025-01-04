@@ -40,14 +40,13 @@ const RecyclingMethods = () => {
         });
 
         const response = await axios.post(`${BASE_URL}/recyclingMethods`, {
-          name: name || 'Unknown Puck/Disc',  // Default value if not found
+          name: name || 'Unknown Puck/Disc',
           size: size || 'N/A',
           type: type || 'N/A',
           material: material || 'N/A',
           cost: JSON.parse(cost) || 0,
         });
 
-        // Parse and set the response data
         setRecyclingMethods(response.data.recycling_methods || []);
       } catch (error) {
         setError('Failed to fetch recycling methods');
@@ -61,7 +60,7 @@ const RecyclingMethods = () => {
   }, []);
 
   if (loading) {
-    return <ActivityIndicator size="large" color="#0000ff" />;
+    return <ActivityIndicator size="large" color="#4CAF50" />;
   }
 
   if (error) {
@@ -97,55 +96,65 @@ const RecyclingMethods = () => {
 const styles = StyleSheet.create({
   container: {
     padding: 20,
+    backgroundColor: '#F1F8E9',  // A soft light green background
   },
   title: {
-    fontSize: 24,
+    fontSize: 26,
     fontWeight: 'bold',
+    color: '#388E3C',  // Dark green for good contrast
     marginBottom: 20,
+    textAlign: 'center',
   },
   methodContainer: {
     marginBottom: 20,
-    padding: 15,
-    backgroundColor: '#f8f8f8',
-    borderRadius: 8,
-    shadowColor: '#000',
-    shadowOpacity: 0.1,
-    shadowRadius: 10,
+    padding: 20,
+    backgroundColor: '#E8F5E9',  // Lighter green
+    borderRadius: 12,
+    shadowColor: '#388E3C',
+    shadowOpacity: 0.2,
+    shadowRadius: 6,
     shadowOffset: { width: 0, height: 2 },
+    elevation: 4,
   },
   methodTitle: {
-    fontSize: 20,
+    fontSize: 22,
     fontWeight: '600',
-    marginBottom: 10,
+    color: '#2C6B2F',  // Darker green for headings
+    marginBottom: 12,
   },
   methodDescription: {
-    fontSize: 16,
-    marginBottom: 10,
+    fontSize: 18,
+    color: '#1B5E20',  // Medium green
+    marginBottom: 12,
   },
   methodSteps: {
-    fontSize: 16,
+    fontSize: 18,
     fontWeight: 'bold',
-    marginBottom: 5,
+    color: '#388E3C',  // Matching the title color
+    marginBottom: 8,
   },
   stepText: {
-    fontSize: 14,
-    marginBottom: 5,
-    paddingLeft: 10,
+    fontSize: 16,
+    marginBottom: 8,
+    paddingLeft: 15,
+    color: '#2C6B2F',  // Medium dark green
   },
   noMethodsText: {
     fontSize: 18,
     fontStyle: 'italic',
-    color: '#888',
+    color: '#4CAF50',  // A friendly green for no content state
+    textAlign: 'center',
   },
   errorText: {
     fontSize: 18,
-    color: 'red',
+    color: '#D32F2F',  // Red color for errors
     textAlign: 'center',
   },
   centered: {
     justifyContent: 'center',
     alignItems: 'center',
     flex: 1,
+    backgroundColor: '#F1F8E9',
   },
 });
 
