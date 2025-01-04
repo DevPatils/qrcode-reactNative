@@ -31,6 +31,7 @@ const RecyclingMethods = () => {
           return;
         }
 
+        // Set product details state
         setProductDetails({
           name: name || 'N/A',
           size: size || 'N/A',
@@ -39,12 +40,16 @@ const RecyclingMethods = () => {
           cost: cost || 'N/A',
         });
 
+        // If the cost is a stringified number, parse it to a number, otherwise default to 0
+        const parsedCost = isNaN(cost) ? 0 : parseFloat(cost);
+
+        // Make the API request with parsed cost
         const response = await axios.post(`${BASE_URL}/recyclingMethods`, {
           name: name || 'Unknown Puck/Disc',
           size: size || 'N/A',
           type: type || 'N/A',
           material: material || 'N/A',
-          cost: JSON.parse(cost) || 0,
+          cost: parsedCost,
         });
 
         setRecyclingMethods(response.data.recycling_methods || []);
