@@ -4,28 +4,28 @@ import { Stack } from 'expo-router'
 import { StatusBar } from 'expo-status-bar'
 
 const AuthLayout = () => {
-    return (
-        <>
+  return (
+    <>
 
 
-            <Stack>
-                <Stack.Screen
-                    name='sign-up'
-                    options={{
-                        headerShown: false
-                    }} />
-                <Stack.Screen
-                    name='sign-in'
-                    options={{
-                        headerShown: false
-                    }} />
+      <Stack>
+        <Stack.Screen
+          name='sign-up'
+          options={{
+            headerShown: false
+          }} />
+        <Stack.Screen
+          name='sign-in'
+          options={{
+            headerShown: false
+          }} />
 
 
 
-            </Stack>
-            <StatusBar backgroundColor='#161612' style='light' />
-        </>
-    )
+      </Stack>
+      <StatusBar backgroundColor='#161612' style='light' />
+    </>
+  )
 }
 
 export default AuthLayout

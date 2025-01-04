@@ -25,11 +25,6 @@ const LandingPage = () => {
     }
   }
 
-
-  const handleLearnMoreClick = () => {
-    // router.push('/about');
-  };
-
   return (
     <View className="flex flex-1  bg-white py-16 px-6">
       {/* Header */}
