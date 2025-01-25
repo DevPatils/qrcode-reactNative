@@ -4,6 +4,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import { BarChart } from "react-native-chart-kit";
 import CustomButton from '@/components/CustomButton';
 import { router } from 'expo-router';
+import { BASE_URL } from '@/constants/url';
 
 interface MetricCardProps {
   title: string;
@@ -64,7 +65,7 @@ const Metrics = () => {
       if (productDetails) {
         try {
           const response = await fetch(
-            'https://sustain-server-hndkbfg6c8gvgwcc.southindia-01.azurewebsites.net/metricsImage',
+            `${BASE_URL}/metricsImage`,
             {
               method: 'POST',
               headers: {

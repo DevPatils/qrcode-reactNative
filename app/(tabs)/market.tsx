@@ -7,7 +7,7 @@ const Market = () => {
   
 
   const handleMarketData = async() => {
-    const response = await axios.get('https://sustain-server-hndkbfg6c8gvgwcc.southindia-01.azurewebsites.net/market/all-products')
+    const response = await axios.get('https://sustain-server-hndkbfg6c8gvgwcc.centralindia-01.azurewebsites.net/market/all-products')
     console.log(response.data.products)
   }
 
