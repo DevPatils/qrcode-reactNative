@@ -95,9 +95,9 @@ const Metrics = () => {
     return <Text>Loading...</Text>;
   }
 
-  const redirectToRecycle = () =>{
-    router.replace('./recycle')
-  }
+  // const redirectToRecycle = () =>{
+  //   router.replace('/recycle');
+  // }
   const chartData = {
     labels: ["Carbon", "Water", "Energy", "Landfill"],
     datasets: [{
@@ -174,13 +174,13 @@ const Metrics = () => {
         isLoading={false}
       />
 
-<CustomButton
+{/* <CustomButton
               title="Recycle Methods"
               handlepress={redirectToRecycle}
               containerStyles="bg-green-600 w-80 py-4 border-4 border-black rounded-md shadow-brutal mb-4"
               textStyles="text-white font-bold text-lg"
               isLoading={false}
-            />
+            /> */}
 
     </ScrollView>
   );
